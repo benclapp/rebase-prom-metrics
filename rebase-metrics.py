@@ -116,6 +116,20 @@ rebase_time_group = {
             'record': 'cumulative_metric_rebase_time_seconds',
             'expr': str(time.time()),
             'labels': {'prometheus_instance': server}
+        },
+        {
+            'alert': 'monitor__rebased_metrics_expiring',
+            'expr': '((time() - cumulative_metric_rebase_time_seconds) / 3600 / 24) > 150',
+            'labels': {
+                'alerttype': 'alert',
+                'severity': 'high'
+            },
+            'annotations': {
+                'title': 'Cumulative metrics will need to be rebased within 30d',
+                'details': ('It has been {{ $value }} since the cumulative metrics '
+                            'were last rebased. Consider using this tool to save your '
+                            'sanity https://git.bencl.app/rebase-prom-metrics')
+            }
         }
     ]
 }
@@ -128,7 +142,6 @@ for metric in metric_io_table:
 
     group = dict(
         name = metric["group_name"],
-        interval = '15s',
         rules = rules
     )
 
