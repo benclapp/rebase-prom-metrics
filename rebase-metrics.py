@@ -15,7 +15,8 @@ parser.add_argument('-o', '--output-file', type=str, dest='output_file', default
 
 args = parser.parse_args()
 
-query_url = args.server + '/api/v1/query'
+server = args.server
+query_url = server + '/api/v1/query'
 rebase_time = args.custom_time
 rule_file_name = args.output_file
 
@@ -107,6 +108,18 @@ pause()
 rule_file = dict(
     groups = []
 )
+
+rebase_time_group = {
+    'name': 'cumulative_metric_rebase_time_seconds group',
+    'rules': [
+        {
+            'record': 'cumulative_metric_rebase_time_seconds',
+            'expr': str(time.time()),
+            'labels': {'prometheus_instance': server}
+        }
+    ]
+}
+rule_file["groups"].append(rebase_time_group)
 
 for metric in metric_io_table:
     print('Generating rules for group: "' + metric["group_name"] + '"')
