@@ -22,11 +22,6 @@ rule_file_name = args.output_file
 
 metric_io_table = [
     dict(
-        query = str('gtp_tickets_refunded:cumulative > 0'),
-        metric_to_record = 'gtp_tickets_refunded:rebase',
-        group_name = "rebased gtp_tickets_refunded at " + str(rebase_time)
-    ),
-    dict(
         query = str('gtp_tickets_sold:cumulative > 0'),
         metric_to_record = 'gtp_tickets_sold:rebase',
         group_name = "rebased gtp_tickets_sold at " + str(rebase_time)
@@ -40,6 +35,11 @@ metric_io_table = [
         query = str('gtp_completed_transactions:cumulative > 0'),
         metric_to_record = 'gtp_completed_transactions:rebase',
         group_name = "rebased gtp_completed_transactions at " + str(rebase_time)
+    ),
+    dict(
+        query = str('gtp_tickets_refunded:cumulative > 0'),
+        metric_to_record = 'gtp_tickets_refunded:rebase',
+        group_name = "rebased gtp_tickets_refunded at " + str(rebase_time)
     ),
     dict(
         query = str('round(increase(gtp_completed_loyalty_transactions{OrganisationName!="Availability Test Vendor"}[1y])) > 0'),
