@@ -114,7 +114,7 @@ rebase_time_group = {
     'rules': [
         {
             'record': 'cumulative_metric_rebase_time_seconds',
-            'expr': str(time.time()),
+            'expr': rebase_time,
             'labels': {'prometheus_instance': server}
         },
         {
