@@ -2,7 +2,7 @@
 
 a little tool to query a Prometheus server, and create recording rules based on the results returned. Intented to be used as a dirty hack to rebase cumulative metrics past the retention period of your Prometheus server.
 
-A metric `cumulative_metric_rebase_time_seconds` is also created, to use to alert on when the retention cutoff is getting near. This is the metric used in the alert, which is also generated.
+A metric and alert are created to help notify when the next rebasing is required.
 
 ```yaml
 groups:
