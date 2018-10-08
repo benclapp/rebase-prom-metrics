@@ -12,6 +12,8 @@ parser.add_argument('-t', '--time', type=int, dest='custom_time', default=int(ti
                     help='A custom time to query at, as UNIX time in seconds. Defaults to now.')
 parser.add_argument('-o', '--output-file', type=str, dest='output_file', default='data.yaml',
                     help='Where to save the rule files. Default to "data.yaml"')
+parser.add_argument('-ns', '--namespace', type=str, dest='namespace_label', default='production',
+                    help='Optional namespace label value. Defaults to "production".')
 
 args = parser.parse_args()
 
@@ -19,6 +21,7 @@ server = args.server
 query_url = server + '/api/v1/query'
 rebase_time = args.custom_time
 rule_file_name = args.output_file
+namespace_label = args.namespace_label
 
 metric_io_table = [
     dict(
@@ -89,9 +92,8 @@ def convert_metrics_to_rules(metrics: list, output_metric: str):
             labels = dict(
                 CinemaChainId = metric["metric"]["CinemaChainId"],
                 OrganisationName = metric["metric"]["OrganisationName"],
-                job = metric["metric"]["job"],
                 region = metric["metric"]["region"],
-                service = metric["metric"]["service"],
+                namespace = namespace_label,
             )
         )
         rules.append(rule)
@@ -119,10 +121,11 @@ rebase_time_group = {
         },
         {
             'alert': 'monitor__rebased_metrics_expiring',
-            'expr': '((time() - cumulative_metric_rebase_time_seconds) / 3600 / 24) > 150',
+            'expr': '((time() - cumulative_metric_rebase_time_seconds) / 3600 / 24) > 60',
             'labels': {
                 'alerttype': 'alert',
-                'severity': 'high'
+                'severity': 'high',
+                'namespace': namespace_label
             },
             'annotations': {
                 'title': 'Cumulative metrics will need to be rebased within 30d',
